@@ -137,7 +137,6 @@ def process_file(input_path: Path, output_dir: Path):
                 quiz_data["questions"].append(mcq)
                 print(f"✓ Done {i}")
                 break
-            import traceback
 
 except Exception as e:
     print(f"\n❌ Retry {attempt + 1}")
