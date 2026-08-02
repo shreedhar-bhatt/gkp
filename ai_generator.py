@@ -127,23 +127,23 @@ def process_file(input_path: Path, output_dir: Path):
     for i, q in enumerate(questions, 1):
         print(f"Generating MCQ {i}/{len(questions)}...")
         for attempt in range(MAX_RETRIES):
-            try:
-                mcq = generate_mcq(q)
-                correct = mcq["options"][mcq["correctAnswer"]]
-                random.shuffle(mcq["options"])
-                mcq["correctAnswer"] = mcq["options"].index(correct)
-                mcq["id"] = i
-                mcq["studyPoint"] = q.get("study_point", "")
-                quiz_data["questions"].append(mcq)
-                print(f"✓ Done {i}")
-                break
+    try:
+        mcq = generate_mcq(q)
+        correct = mcq["options"][mcq["correctAnswer"]]
+        random.shuffle(mcq["options"])
+        mcq["correctAnswer"] = mcq["options"].index(correct)
+        mcq["id"] = i
+        mcq["studyPoint"] = q.get("study_point", "")
+        quiz_data["questions"].append(mcq)
+        print(f"✓ Done {i}")
+        break
 
-except Exception as e:
-    print(f"\n❌ Retry {attempt + 1}")
-    print(f"Exception type: {type(e).__name__}")
-    print(f"Exception: {repr(e)}")
-    traceback.print_exc()
-    time.sleep(1.5)
+    except Exception as e:
+        print(f"\n❌ Retry {attempt + 1}")
+        print(f"Exception type: {type(e).__name__}")
+        print(f"Exception: {repr(e)}")
+        traceback.print_exc()
+        time.sleep(1.5)
 
     quiz_filename = f"quiz_{date_for_filename}.json"
     output_dir.mkdir(parents=True, exist_ok=True)
