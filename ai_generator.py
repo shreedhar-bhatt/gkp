@@ -4,7 +4,6 @@ import time
 import random
 import argparse
 import re
-import traceback
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
@@ -33,7 +32,6 @@ MONTH_MAP = {
 }
 
 load_dotenv()
-print("Groq API Key loaded:", bool(os.getenv("GROQ_API_KEY")))
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 with open(PROMPT_FILE, "r", encoding="utf-8") as f:
@@ -98,16 +96,15 @@ def normalize_date_for_filename(date_str: str) -> str:
 
     return datetime.now().strftime("%Y_%m_%d")
 
-def process_file(input_path: Path, output_dir: Path):
-    print(f"\n📄 Processing: {input_path.name}")
 
+def process_file(input_path: Path, output_dir: Path):
+    print(f"\nProcessing: {input_path.name}")
     with open(input_path, "r", encoding="utf-8") as f:
         source = json.load(f)
 
     questions = source.get("questions", [])
     raw_date = source.get("date", "")
     date_for_filename = normalize_date_for_filename(raw_date)
-
     if date_for_filename == "unknown_date":
         date_for_filename = datetime.now().strftime("%Y_%m_%d")
 
@@ -127,38 +124,22 @@ def process_file(input_path: Path, output_dir: Path):
 
     for i, q in enumerate(questions, 1):
         print(f"Generating MCQ {i}/{len(questions)}...")
-
-        success = False
-
         for attempt in range(MAX_RETRIES):
             try:
                 mcq = generate_mcq(q)
-
                 correct = mcq["options"][mcq["correctAnswer"]]
                 random.shuffle(mcq["options"])
                 mcq["correctAnswer"] = mcq["options"].index(correct)
-
                 mcq["id"] = i
                 mcq["studyPoint"] = q.get("study_point", "")
-
                 quiz_data["questions"].append(mcq)
-
-                print(f"✓ Done {i}")
-                success = True
+                print(f"[DONE] Done {i}")
                 break
-
             except Exception as e:
-                print(f"\n❌ Retry {attempt + 1}")
-                print(f"Exception type: {type(e).__name__}")
-                print(f"Exception: {repr(e)}")
-                traceback.print_exc()
+                print(f"[RETRY] Retry {attempt+1}: {e}")
                 time.sleep(1.5)
 
-        if not success:
-            print(f"⚠️ Skipping question {i}")
-
     quiz_filename = f"quiz_{date_for_filename}.json"
-
     output_dir.mkdir(parents=True, exist_ok=True)
 
     with open(output_dir / quiz_filename, "w", encoding="utf-8") as f:
@@ -169,11 +150,11 @@ def process_file(input_path: Path, output_dir: Path):
 
     archive_dir = output_dir / "archive"
     archive_dir.mkdir(parents=True, exist_ok=True)
-
     with open(archive_dir / quiz_filename, "w", encoding="utf-8") as f:
         json.dump(quiz_data, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ Saved: {quiz_filename}")
+    print(f"[SAVED] Saved: {quiz_filename}")
+
 
 def rebuild_archive_index(archive_dir: Path, output_path: Path):
     registry = {"archives": []}
@@ -228,9 +209,9 @@ def set_latest_by_date(output_dir: Path):
             latest_data = f.read()
         with open(latest_path, "w", encoding="utf-8") as f:
             f.write(latest_data)
-        print(f"✅ Set latest.json to most recent: {best_file.name} ({best_key})")
+        print(f"[SAVED] Set latest.json to most recent: {best_file.name} ({best_key})")
     else:
-        print("⚠️ No archive files found to set as latest")
+        print("[WARN] No archive files found to set as latest")
 
 
 def main():
@@ -261,10 +242,10 @@ def main():
             process_file(input_file, output_dir)
             set_latest_by_date(output_dir)
         except Exception as e:
-            print(f"❌ Failed to process {input_file.name}: {e}")
+            print(f"[FAIL] Failed to process {input_file.name}: {e}")
 
     rebuild_archive_index(output_dir / "archive", output_dir / "archive_index.json")
-    print("\n🎉 All done!")
+    print("\n[DONE] All done!")
 
 
 if __name__ == "__main__":
