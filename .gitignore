@@ -19,11 +19,11 @@ Thumbs.db
 *.swp
 *.swo
 
-# Data (generated)
+# Data (generated at root only)
 questions_batch/
-questions.json
-quiz.json
-quiz_*.json
+/questions.json
+/quiz.json
+/quiz_*.json
 
 # Temp / verification scripts
 inspect_date.py
