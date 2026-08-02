@@ -2,7 +2,7 @@ name: Update Quiz Data
 
 on:
   schedule:
-    - cron: '0 0 * * 3'  # Weekly on Wednesday at midnight UTC
+    - cron: '15 4 * * 3'  # Weekly on Wednesday at 4:15 AM UTC (10:00 AM Nepal time)
   workflow_dispatch:
 
 jobs:
