@@ -32,6 +32,7 @@ MONTH_MAP = {
 }
 
 load_dotenv()
+print("Groq API Key loaded:", bool(os.getenv("GROQ_API_KEY")))
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 with open(PROMPT_FILE, "r", encoding="utf-8") as f:
@@ -135,9 +136,14 @@ def process_file(input_path: Path, output_dir: Path):
                 quiz_data["questions"].append(mcq)
                 print(f"✓ Done {i}")
                 break
-            except Exception as e:
-                print(f"✗ Retry {attempt+1}: {e}")
-                time.sleep(1.5)
+            import traceback
+
+except Exception as e:
+    print(f"\n❌ Retry {attempt + 1}")
+    print(f"Exception type: {type(e).__name__}")
+    print(f"Exception: {repr(e)}")
+    traceback.print_exc()
+    time.sleep(1.5)
 
     quiz_filename = f"quiz_{date_for_filename}.json"
     output_dir.mkdir(parents=True, exist_ok=True)
