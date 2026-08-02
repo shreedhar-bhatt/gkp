@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result - समसामायिक</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/result.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">📝</span>
+        <span class="logo-text">समसामायिक</span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="result.html" class="nav-link active">Result</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <div class="result-card">
+      <div class="result-header">
+        <h2 class="result-title">Result</h2>
+        <div class="score-circle">
+          <span id="result-score" class="score-number">0</span>
+          <span class="score-total">/ <span id="result-total">0</span></span>
+        </div>
+        <p id="result-percentage" class="result-percentage">0%</p>
+        <p id="result-message" class="result-message"></p>
+        <p id="result-quote" class="result-quote"></p>
+      </div>
+      <div class="result-details">
+        <div class="result-stat">
+          <span class="result-stat-label">Time</span>
+          <span id="result-time" class="result-stat-value">-</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">Accuracy</span>
+          <span id="result-accuracy" class="result-stat-value">-</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">Points</span>
+          <span id="result-points" class="result-stat-value">-</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">Attempted</span>
+          <span id="result-attempted" class="result-stat-value">-</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">Wrong</span>
+          <span id="result-wrong" class="result-stat-value">-</span>
+        </div>
+      </div>
+      <div class="result-actions">
+        <a href="index.html" class="btn btn-primary">Retry</a>
+        <a href="index.html" class="btn btn-secondary">Go Home</a>
+        <button class="btn btn-success" onclick="result.downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container">
+      <p>समसामायिक Loksewa Quiz &copy; 2083 | Gorkhapatra Online Source</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/result.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const results = Storage.getResults();
+      if (results.length > 0) {
+        const latest = results[0];
+        resultView.show(latest);
+      }
+    });
+  </script>
+</body>
+</html>

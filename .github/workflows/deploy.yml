@@ -1,0 +1,39 @@
+name: Update Quiz Data
+
+on:
+  schedule:
+    - cron: '0 0 * * 3'  # Weekly on Wednesday at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  update-quiz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 lxml urllib3 python-dotenv groq
+          
+      - name: Run scraper
+        run: python scraper.py --latest 1
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          
+      - name: Run AI generator
+        run: python ai_generator.py --input-dir questions_batch --output-dir docs/data
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/data/
+          git commit -m "Update quiz data" || exit 0
+          git push

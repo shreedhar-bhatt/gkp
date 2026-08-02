@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>समसामयिक - Loksewa Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/quiz.css">
+  <link rel="stylesheet" href="css/result.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+
+  <!-- Google Analytics (optional - replace with your GA4 ID) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <a href="#" class="logo" onclick="app.goHome(); return false;">
+        <span class="logo-icon">📝</span>
+        <span class="logo-text">समसामयिक</span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Search" title="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Dark mode">
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="sun-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" id="profile-btn" aria-label="Profile" title="Profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+              <span class="profile-name" id="profile-name">Guest</span>
+              <span class="profile-email" id="profile-email">guest@samasamaik</span>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-quizzes">0</span>
+              <span class="profile-stat-label">Quizzes</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-bookmarks">0</span>
+              <span class="profile-stat-label">Bookmarks</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-subscribers">0</span>
+              <span class="profile-stat-label">Subscribers</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-value" id="profile-best">0%</span>
+              <span class="profile-stat-label">Best</span>
+            </div>
+          </div>
+          <div class="profile-menu">
+            <button class="profile-menu-item" onclick="app.goHistory()">
+              <span>📊</span> History
+            </button>
+            <button class="profile-menu-item" onclick="app.goBookmarks()">
+              <span>🔖</span> Bookmarks
+            </button>
+            <button class="profile-menu-item" onclick="app.goAbout()">
+              <span>ℹ️</span> About
+            </button>
+            <button class="profile-menu-item" onclick="app.handleLogout()">
+              <span>🚪</span> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <button class="sidebar-link active" data-target="home" onclick="app.goHome()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="sidebar-link" data-target="categories" onclick="app.goCategories()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span>Categories</span>
+      </button>
+      <button class="sidebar-link" data-target="bookmarks" onclick="app.goBookmarks()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>Bookmarks</span>
+      </button>
+      <button class="sidebar-link" data-target="history" onclick="app.goHistory()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>History</span>
+      </button>
+      <button class="sidebar-link" data-target="subscribers" onclick="app.goSubscribers()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Subscribers</span>
+      </button>
+      <button class="sidebar-link" data-target="about" onclick="app.goAbout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>About</span>
+      </button>
+      <button class="sidebar-link" id="nav-login" data-target="login" onclick="app.goLogin()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+          <polyline points="10 17 15 12 10 7"></polyline>
+          <line x1="15" y1="12" x2="3" y2="12"></line>
+        </svg>
+        <span>Login</span>
+      </button>
+      <button class="sidebar-link hidden" id="nav-logout" onclick="app.handleLogout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <section id="view-home" class="view active">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Welcome! 🙏</h1>
+          <p class="dashboard-subtitle">Start today's Loksewa preparation quiz</p>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card latest-card" id="latest-card">
+            <div class="card-header">
+              <span class="card-icon">📖</span>
+              <h2 class="card-title">New Quiz</h2>
+              <span class="badge badge-new">New</span>
+            </div>
+            <div class="card-body">
+              <h3 id="latest-title" class="latest-title">Loading...</h3>
+              <div class="latest-meta">
+                <span class="meta-item"><span class="meta-icon">📅</span> <span id="latest-date">-</span></span>
+                <span class="meta-item"><span class="meta-icon">📰</span> Gorkhapatra Online</span>
+                <span class="meta-item"><span class="meta-icon">❓</span> <span id="latest-count">-</span> questions</span>
+              </div>
+              <button class="btn btn-primary btn-block" onclick="app.startLatestQuiz()">Start Exam</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Categories</h3>
+          <div id="categories-list" class="categories-grid"></div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Subscribe for Updates</h3>
+          <div class="subscribe-card">
+            <p>Get notified when new quizzes are published every Wednesday.</p>
+            <form id="subscribe-form" onsubmit="app.handleSubscribe(event)">
+              <div class="subscribe-input-group">
+                <input type="email" id="subscribe-email" required placeholder="Enter your email address">
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+              </div>
+            </form>
+            <p class="subscribe-note">Free forever. No spam, only quiz updates.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3 class="section-title">Quizzes by Date</h3>
+          <div id="quizzes-by-date" class="quizzes-by-date"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-quiz" class="view">
+      <div class="quiz-header">
+        <div class="quiz-meta">
+          <span id="quiz-title" class="quiz-title"></span>
+          <span id="quiz-timer" class="quiz-timer">00:00</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="quiz-stats">
+          <span id="question-counter">Question 1/10</span>
+          <span id="score-display">Score: 0</span>
+        </div>
+      </div>
+      <div id="quiz-container" class="quiz-container">
+        <div class="question-card">
+          <div class="question-meta">
+            <span id="question-category" class="badge badge-category"></span>
+            <span id="question-difficulty" class="badge badge-difficulty"></span>
+          </div>
+          <h3 id="question-text" class="question-text"></h3>
+          <div id="options-grid" class="options-grid"></div>
+        </div>
+      </div>
+      <div class="quiz-footer">
+        <button id="btn-prev" class="btn btn-secondary" onclick="quiz.prevQuestion()">Previous</button>
+        <button id="btn-next" class="btn btn-primary" onclick="quiz.nextQuestion()">Next</button>
+        <button id="btn-submit" class="btn btn-success hidden" onclick="quiz.submitQuiz()">Submit</button>
+      </div>
+    </section>
+
+    <section id="view-result" class="view">
+      <div class="result-card">
+        <div class="result-header">
+          <h2 class="result-title">Result</h2>
+          <div class="score-circle">
+            <span id="result-score" class="score-number">0</span>
+            <span class="score-total">/ <span id="result-total">0</span></span>
+          </div>
+          <p id="result-percentage" class="result-percentage"></p>
+          <p id="result-message" class="result-message"></p>
+          <p id="result-quote" class="result-quote"></p>
+        </div>
+        <div class="result-details">
+          <div class="result-stat">
+            <span class="result-stat-label">Time</span>
+            <span id="result-time" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Accuracy</span>
+            <span id="result-accuracy" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Points</span>
+            <span id="result-points" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Attempted</span>
+            <span id="result-attempted" class="result-stat-value">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-label">Wrong</span>
+            <span id="result-wrong" class="result-stat-value">-</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary" onclick="app.startLatestQuiz()">Retry</button>
+          <button class="btn btn-secondary" onclick="app.goHome()">Go Home</button>
+          <button class="btn btn-outline" onclick="result.reviewAnswers()">Review Answers</button>
+          <button class="btn btn-success" onclick="result.downloadPDF()">Download PDF</button>
+        </div>
+      </div>
+      <div id="review-section" class="review-section hidden"></div>
+    </section>
+
+    <section id="view-login" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Welcome to Samasamaik</h1>
+          <p class="dashboard-subtitle">Please login or create an account to save your progress</p>
+        </div>
+        <div class="login-card">
+          <div class="login-tabs">
+            <button class="login-tab active" id="tab-login" onclick="app.switchLoginTab('login')">Login</button>
+            <button class="login-tab" id="tab-register" onclick="app.switchLoginTab('register')">Register</button>
+          </div>
+          <div class="login-body">
+            <form id="login-form" onsubmit="app.handleLogin(event)">
+              <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" required placeholder="Enter username">
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required placeholder="Enter password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <form id="register-form" class="hidden" onsubmit="app.handleRegister(event)">
+              <div class="form-group">
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" required placeholder="Choose username">
+              </div>
+              <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" required placeholder="Choose password">
+              </div>
+              <div class="form-group">
+                <label for="register-confirm">Confirm Password</label>
+                <input type="password" id="register-confirm" required placeholder="Confirm password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-subscribers" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Subscribers</h1>
+          <p class="dashboard-subtitle">People who subscribed for quiz updates</p>
+        </div>
+        <div id="subscribers-list" class="subscribers-list"></div>
+      </div>
+    </section>
+
+    <section id="view-categories" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Categories</h1>
+          <p class="dashboard-subtitle">Take quizzes by subject</p>
+        </div>
+        <div id="categories-full-list" class="categories-grid"></div>
+      </div>
+    </section>
+
+    <section id="view-bookmarks" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Bookmarks</h1>
+          <p class="dashboard-subtitle">Questions you've bookmarked</p>
+        </div>
+        <div id="bookmarks-list" class="empty-state">
+          <p>No bookmarks yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-history" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Exam History</h1>
+          <p class="dashboard-subtitle">Your past exam results</p>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </section>
+
+    <section id="view-about" class="view">
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">About Samasamaik</h1>
+          <p class="dashboard-subtitle">Free educational platform for competitive exam aspirants</p>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p>Welcome to <strong>Samasamaik</strong> — a free educational platform dedicated to helping competitive exam aspirants in Nepal stay informed through high-quality current affairs quizzes, concise explanations, and structured learning resources.</p>
+
+            <p>The platform primarily transforms important current affairs published in trusted Nepali newspapers, especially <strong>Gorkhapatra</strong>, into interactive multiple-choice questions. Each quiz includes detailed explanations and key study points, making revision faster, smarter, and more effective.</p>
+
+            <p>Whether you are preparing for <strong>Loksewa (Public Service Commission), Nepal Rastra Bank (NRB), Banking, Teacher Service Commission (TSC), Nepal Police, Armed Police Force (APF), Nepal Army, Foreign Service, Engineering, or other competitive examinations</strong>, Samasamaik provides an efficient way to stay updated with current affairs while strengthening your exam preparation.</p>
+
+            <h3>Our Mission</h3>
+            <p>Our mission is to make current affairs preparation simple, reliable, and accessible for every learner in Nepal by leveraging technology and artificial intelligence.</p>
+            <p>We believe students should spend more time understanding important events and less time searching for reliable study materials.</p>
+
+            <h3>What We Offer</h3>
+            <ul>
+              <li>Daily and weekly current affairs quizzes</li>
+              <li>AI-assisted question generation</li>
+              <li>Detailed explanations and study points</li>
+              <li>Topic-wise categorization</li>
+              <li>Bookmark important questions</li>
+              <li>Quiz history and progress tracking</li>
+              <li>Mobile-friendly interface</li>
+              <li>Free access for all learners</li>
+            </ul>
+
+            <h3>Coming Soon</h3>
+            <ul>
+              <li>AI Study Assistant</li>
+              <li>Flashcards</li>
+              <li>Personalized revision plans</li>
+              <li>Full-length mock examinations</li>
+              <li>Performance analytics</li>
+              <li>Offline mode</li>
+              <li>Multiple exam categories</li>
+              <li>Mobile application</li>
+            </ul>
+
+            <h3>About the Developer</h3>
+            <p>Hello! I'm <strong>Shreedhar Sharma Bhatta</strong>, a Mechanical Engineer and Public Administration graduate from Nepal. I currently work in the <strong>Electromechanical Division at Gautam Buddha International Airport (Civil Aviation Authority of Nepal – CAAN)</strong>. Beyond engineering, I am deeply interested in <strong>public policy, public administration, artificial intelligence, automation, and educational technology</strong>.</p>
+
+            <p><strong>Samasamaik</strong> was created to combine these interests by transforming current affairs into structured learning resources for students preparing for competitive examinations in Nepal. My goal is to make reliable current affairs more accessible, engaging, and useful through technology, helping aspirants stay informed and prepare with confidence.</p>
+
+            <h3>Why Samasamaik?</h3>
+            <p>Preparing for competitive examinations often requires reading newspapers every day, identifying important topics, and making personal notes. This process can be time-consuming.</p>
+            <p>Samasamaik simplifies this by converting significant current affairs into exam-oriented quizzes with explanations, allowing learners to revise important topics quickly and effectively. The platform is designed to save time while improving understanding and retention.</p>
+
+            <h3>Contact</h3>
+            <p><strong>Developer:</strong> Shreedhar Sharma Bhatta</p>
+            <p><strong>Phone:</strong> +977 9821429656</p>
+            <p>For suggestions, feature requests, bug reports, or collaboration opportunities, feel free to get in touch.</p>
+
+            <h3>Disclaimer</h3>
+            <p>Samasamaik is an independent educational platform developed solely for learning and competitive examination preparation.</p>
+            <p>The platform summarizes and transforms information from publicly available and trusted news sources into educational content. <strong>Samasamaik is not affiliated with, endorsed by, or officially associated with Gorkhapatra, the Public Service Commission (Loksewa Aayog), Nepal Rastra Bank, the Civil Aviation Authority of Nepal, or any other government organization.</strong></p>
+            <p>All trademarks, names, and publications belong to their respective owners. Users are encouraged to verify important information through official government notifications and original publications before relying on it for examination or professional purposes.</p>
+
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Made with ❤️ in Nepal for Competitive Exam Aspirants.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container">
+      <p>समसामायिक Loksewa Quiz &copy; 2083 | Gorkhapatra Online Source</p>
+      <p class="visitor-counter">👁️ Visitors: <span id="visitor-count">0</span></p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/result.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
